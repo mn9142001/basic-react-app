@@ -8,7 +8,8 @@ export interface Error {
 
 export interface APIError {
     errors : Error[],
-    type : string
+    type : string,
+    status : number
 }
 
 interface ErrorStore {

@@ -1,23 +1,13 @@
-import { useMutation } from "@tanstack/react-query"
 import { ComponentProps } from "react"
-import { AXIOS } from "../../utils/axios"
-import { Form } from "../../components/forms"
+import { Form } from "../../../components/forms"
 
 
 const SignUp = () => {
 
     const signupSuccess = (data: any) => {
-        console.log(login)
+        console.log(data)
     }
 
-    const submitLogin = (data : any) => {
-        return AXIOS.post("http://localhost:8000/patient/signup/", data)
-    }
-
-    const login = useMutation({
-        mutationFn: submitLogin,
-        onSuccess: signupSuccess,
-    })
 
     const formProps : ComponentProps<typeof Form> = {
         fields : [
@@ -56,7 +46,8 @@ const SignUp = () => {
             ]
         ],
 
-        onSubmit : (data : any) => login.mutate(data)
+        submitURL : "/patient/signup/",
+        onSuccess : signupSuccess
     }
 
     return <div className="p-2">

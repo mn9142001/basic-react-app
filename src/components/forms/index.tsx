@@ -30,9 +30,7 @@ export const Form: FC<FormProps> = ({ fields, onSubmit, SubmitButton, onSuccess,
     const [fieldsState, setFieldState] = useState({})
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        console.log("offfffff")
         e.preventDefault()
-        console.log("called mf")
         onSubmit ? onSubmit(fieldsState) : defaultSubmit.mutate(fieldsState)
     }
 

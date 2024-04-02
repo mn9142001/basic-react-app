@@ -1,5 +1,5 @@
 import { ComponentProps } from "react"
-import { Form } from "../../components/forms"
+import { Form } from "../../../components/forms"
 
 const Login = () => {
 
