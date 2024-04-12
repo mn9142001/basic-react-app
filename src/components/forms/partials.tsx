@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useErrorStore } from "../../utils/axios/store";
+import { Error, useErrorStore } from "../../utils/axios/store";
 import { FormFieldNestedArray, FormFieldProps } from "./types";
 import { Button, TextField } from "@mui/material";
 
@@ -17,7 +17,7 @@ export const FormField = (
         fieldsState: Record<string, any>,
         field: FormFieldNestedArray | FormFieldProps,
         setFieldState: any,
-        onError? : (fieldName : string) => void;
+        onError? : (error : Error) => void | string;
     }
 ) => {
 
@@ -41,8 +41,10 @@ export const FormField = (
     const { error } = useErrorStore()
     const isError = Boolean(error?.type)
 
-    const getFieldError = (field: string) => {
-        const res = error?.errors?.filter(error => error.attr === field)[0]?.detail
+    const getFieldError = (fieldName : string) => error?.errors?.filter(error => error.attr === fieldName)[0]
+
+    const getFieldErrorDetail = (field: string) => {
+        const res = getFieldError(field)?.detail
         return res
     }
 
@@ -63,13 +65,20 @@ export const FormField = (
     }
 
     const fieldProps = field.field || {}
-    const errorMessage = isError && fieldProps?.name ? getFieldError(field.apiName || fieldProps.name) : ""
+    const errorMessage = isError && fieldProps?.name ? getFieldErrorDetail(field.apiName || fieldProps.name) : ""
     fieldProps.error = Boolean(errorMessage)
 
-    if (fieldProps.error){
-        fieldProps.helperText = errorMessage
+    if (fieldProps.error) {
+        const error = getFieldError((field.apiName || fieldProps.name) as string);
+        const response = onError ? onError(error as Error) : undefined;
+        
+        if (response) {
+            fieldProps.helperText = response;
+        } else {
+            fieldProps.helperText = errorMessage;
+        }
     }
-
+    
     return <div className="p-2 flex flex-col">
         <TextField {...fieldProps} onChange={onChange} />
     </div>
