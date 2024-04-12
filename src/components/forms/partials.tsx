@@ -12,12 +12,12 @@ export const isFunctionalComponent = (component: any): component is FC => {
 
 export const FormField = (
     {
-        field, fieldsState, setFieldState
+        field, fieldsState, setFieldState, onError
     }: {
         fieldsState: Record<string, any>,
         field: FormFieldNestedArray | FormFieldProps,
-        setFieldState: any
-
+        setFieldState: any,
+        onError? : (fieldName : string) => void;
     }
 ) => {
 
@@ -30,13 +30,14 @@ export const FormField = (
                 {
                     ...pre, ...(
                         {
-                            [name]: { value: value, error: pre[name]?.error }
+                            [name]: value
                         }
                     )
                 }
             )
         )
     }
+
     const { error } = useErrorStore()
     const isError = Boolean(error?.type)
 
@@ -44,7 +45,6 @@ export const FormField = (
         const res = error?.errors?.filter(error => error.attr === field)[0]?.detail
         return res
     }
-
 
     if (Array.isArray(field)) {
         return <div className="flex flex-wrap">
@@ -62,13 +62,16 @@ export const FormField = (
         return <Field {...fieldProps} />
     }
 
-    const fieldProps = field.field
+    const fieldProps = field.field || {}
+    const errorMessage = isError && fieldProps?.name ? getFieldError(field.apiName || fieldProps.name) : ""
+    fieldProps.error = Boolean(errorMessage)
+
+    if (fieldProps.error){
+        fieldProps.helperText = errorMessage
+    }
 
     return <div className="p-2 flex flex-col">
         <TextField {...fieldProps} onChange={onChange} />
-        <small className="text-red-500">
-            {isError && fieldProps?.name ? getFieldError(fieldProps.name) : ""}
-        </small>
     </div>
 }
 

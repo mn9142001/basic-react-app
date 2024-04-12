@@ -3,6 +3,7 @@ import { ComponentProps, FC } from "react";
 
 export interface FormFieldProps {
     field?: FC<any> | ComponentProps<typeof TextField>
+    apiName? : string
 }
 
 

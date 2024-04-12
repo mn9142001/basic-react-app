@@ -72,12 +72,20 @@ export const handleError = (response : AxiosError ) => {
             setError(serverError)
         }
 
-        else if (response.response?.status === 400) {
-            setError(
-                handleAPIError(
-                    response.response?.data as APIError
+        else if ([400, 403].includes(response.response?.status as number)) {
+            const responseData = response.response?.data as APIError
+
+            if (responseData?.type && responseData.type === "client_error"){
+                setError(responseData)
+            } else {
+                setError(
+                    handleAPIError(
+                        response.response?.data as APIError
+                    )
                 )
-            )
+    
+            }
+            
         }
 
         else if (response.response?.status === 404) {
