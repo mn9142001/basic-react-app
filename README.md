@@ -1,3 +1,17 @@
+## How to use the getter component
+
+The getter component is useful when you list objects in different pages and don't want to keep repeating the code for checking if response is success or not before loading the object, adding load circle or displaying an error on failure. It handles this automatically.
+
+all you need to do is as following
+
+```
+const ListProductsPage = () => {
+    return <Getter Component={Home} url="/pateint/plan/" />
+}
+
+```
+
+
 ## How to use the form component
 
 ```
